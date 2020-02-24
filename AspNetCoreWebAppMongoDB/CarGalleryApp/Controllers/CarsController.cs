@@ -50,27 +50,44 @@ namespace CarGalleryApp.Controllers
         //}
 
         // GET: Cars/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = carService.Get(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            return View(car);
         }
 
         // POST: Cars/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(string id, Car car)
+        {
 
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+            // TODO: Add update logic here
+            if (id != car.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                carService.Update(id, car);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return View();
+            }
+        }
 
         // GET: Cars/Delete/5
         public ActionResult Delete(int id)
