@@ -1,6 +1,7 @@
 ﻿using CarGalleryApp.Models;
 using CarGalleryApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CarGalleryApp.Controllers
 {
@@ -44,23 +45,7 @@ namespace CarGalleryApp.Controllers
             return View();
         }
 
-        // POST: Cars/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add insert logic here
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
+        
         // GET: Cars/Edit/5
         public ActionResult Edit(string id)
         {
@@ -102,27 +87,49 @@ namespace CarGalleryApp.Controllers
         }
 
         // GET: Cars/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = carService.Get(id);
+
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            return View(car);
+
         }
 
         // POST: Cars/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            try
+            {
+                var car = carService.Get(id);
 
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                if (car == null)
+                {
+                    return NotFound();
+                }
+
+                carService.Delete(car);
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch 
+            {
+
+                return View();
+            }
+
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
