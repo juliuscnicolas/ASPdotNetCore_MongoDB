@@ -21,9 +21,21 @@ namespace CarGalleryApp.Controllers
         }
 
         // GET: Cars/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = carService.Get(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            return View(car);
+
         }
 
         // GET: Cars/Create
